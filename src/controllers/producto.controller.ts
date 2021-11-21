@@ -1,3 +1,4 @@
+import {authenticate} from '@loopback/authentication';
 import {
   Count,
   CountSchema,
@@ -20,12 +21,14 @@ import {
 import {Producto} from '../models';
 import {ProductoRepository} from '../repositories';
 
+@authenticate("admin") /* Esto cuando se quiere que todos las solicitudes estén protegidas. */
 export class ProductoController {
   constructor(
     @repository(ProductoRepository)
     public productoRepository : ProductoRepository,
   ) {}
 
+  /* @authenticate("admin") Esto a cada método o solicitud que se desee estar protegida */
   @post('/productos')
   @response(200, {
     description: 'Producto model instance',
@@ -58,6 +61,7 @@ export class ProductoController {
     return this.productoRepository.count(where);
   }
 
+  @authenticate.skip()/* Para saltar autenticación con esta solicitud o método */
   @get('/productos')
   @response(200, {
     description: 'Array of Producto model instances',
